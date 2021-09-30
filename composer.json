@@ -1,0 +1,16 @@
+{
+    "name": "infinite/platfrom_builder",
+    "description": "a simple framework to build platforms consisting of multiple user types",
+    "authors": [
+        {
+            "name": "maleeshagimshan98",
+            "email": "maleeshagimshan74@gmail.com"
+        }
+    ],
+    "autoload": {
+        "classmap" : [
+            "./"
+        ]
+    },
+    "require": {}
+}
