@@ -1,0 +1,27 @@
+{
+	"info": {
+		"_postman_id": "3d4ad245-3f47-47b1-93c6-ff1d4e356ef9",
+		"name": "api_router",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "request_path_test",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "api_router/Tests/",
+					"host": [
+						"api_router"
+					],
+					"path": [
+						"Tests",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

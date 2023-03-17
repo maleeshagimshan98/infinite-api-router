@@ -1,10 +1,12 @@
 {
-    "name": "infinite/platfrom_builder",
-    "description": "a simple framework to build platforms consisting of multiple user types",
+    "name": "maleeshagimshan98/infinite-simple-api-router",
+    "version": "0.1.3",
+    "description": "a simple library to delegate control from api endpoint to controller methods. Matches request parameters with the conditions specified",
     "authors": [
         {
-            "name": "maleeshagimshan98",
-            "email": "maleeshagimshan74@gmail.com"
+            "name": "Maleesha Gimshan",
+            "email": "maleeshagimshan74@gmail.com",
+            "homepage" : "https://www.github.com/maleeshagimshan98"
         }
     ],
     "autoload": {

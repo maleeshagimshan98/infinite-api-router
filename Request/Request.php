@@ -1,12 +1,14 @@
 <?php
 /**
  * © Maleesha Gimshan - 2021 - github.com/maleeshagimshan98
- * router class for platform_builder
+ * request class for managing HTTP Requests
  */
-namespace EndpointController;
+namespace Infinite;
+
+use Exception;
 
 /**
- * Undocumented class
+ * class for managing HTTP Request
  */
 class Request 
 {
@@ -15,28 +17,33 @@ class Request
      *
      * @var string
      */
-    public $method;
+    private $method;
 
     /**
      * request parameters
      *
-     * @var object|array
+     * @var array
      */
-    public $params;
+    private $queryParams;
 
     /**
      * request path
      *
      * @var string
      */
-    public $path;
+    private $path;
+
+    /**
+     * 
+     */
+    private $uri;
 
     /**
      * request body
      *
-     * @var object
+     * @var string
      */
-    public $requestBody;
+    private $requestBody;
 
     /**
      * constructor
@@ -44,10 +51,40 @@ class Request
     public function __construct ()
     {
         $this->method = $_SERVER["REQUEST_METHOD"];
-        $this->path = $this->getRequestPath();
-        parse_str($_SERVER['QUERY_STRING'],$this->params);
-        
+        $this->uri = $this->parseRequestUri();
+        $this->parseQueryString();              
         $this->requestBody = $this->parseRequestBody();
+    }
+
+    /**
+     * get request's path
+     *
+     * @return string
+     */
+    protected function parseRequestUri ()
+    {
+        $uri = parse_url($_SERVER["REQUEST_URI"]);
+        return $uri;
+    }
+
+    /**
+     * parse request's query string data
+     *
+     * @return void
+     */
+    protected function parseQueryString ()
+    {
+        parse_str($_SERVER['QUERY_STRING'],$this->queryParams);  
+    }
+
+    /**
+     * parse request body
+     * 
+     * @return array|object - request body
+     */
+    protected function parseRequestBody ()
+    {        
+        return file_get_contents("php://input");
     }
 
     /**
@@ -61,104 +98,49 @@ class Request
     }
 
     /**
-     * get request body
+     * get the request's path
      * 
-     * @param string $param_name - parameter name
-     * @return object|string
+     * @return string $this->uri
      */
-    public function requestBody ($param_name = null)
+    public function getPath ()
     {
-        if (
-            isset($param_name)&&
-            $param_name !== ""&&
-            isset($this->requestBody->$param_name))
-            {
-              return $this->requestBody->$param_name;
-            }
-
-        return $this->requestBody;
+        return $this->uri;
     }
 
     /**
-     * get request's path
+     * get request's body
      * 
-     * @return string
+     * @return object
      */
-    public function path ()
+    public function requestBody ()
     {
-        return $this->path;
+        return $this->requestBody;
+    }
+    
+    /**
+     * decode and get the json encoded request body
+     *
+     * @return object|array
+     */
+    public function jsonDecodeRequestBody () //***** check - has contradiction with ApiEndpointController->__construct */
+    {
+        try {
+            //... throw errors if json decode fails
+            return json_decode($this->requestBody);
+        }
+        catch (\Exception $e) {
+            throw new \Exception("Cannot json decode the request body");
+        }
     }
 
     /**
      * get request's query parameters
      * 
-     * @param string $param_name - parameter name
-     * @return array|string
+     * @return array
      */
-    public function params ($param_name = null)
-    {
-        if (
-            isset($param_name)&&
-            $param_name !== "" &&
-            isset($this->params[$param_name]))
-            {
-                return $this->params->$param_name;
-            }
-        return $this->params;
-    }
-
-    /**
-     * get request parameter by name
-     * example :-  {method : 'POST', name : 'task'}
-     * 
-     * @param object $param - parameter data     * 
-     * @return string
-     */
-    public function getParam ($param)
-    {
-        switch ($param->method) {
-            case "POST" :
-                if (isset($this->requestBody[$param->name])) {
-                    if (gettype($param->name) === "array") {
-                        
-                    }
-                    return $this->requestBody[$param->name];
-                }
-                return false;
-            break;
-
-            case "GET" :
-                if (isset($this->params[$param->name])) {
-                    return $this->params[$param->name];
-                }
-                return false;
-            break;
-        }        
-    }
-
-    /**
-     * parse request body
-     * if request method is POST
-     * 
-     * @return array|object - json decoded object
-     */
-    public function parseRequestBody ()
-    {
-        if ($this->method == "POST"){
-            return json_decode(rawurldecode(file_get_contents("php://input")));
-        }
-    }
-
-    /**
-     * get requests path
-     *
-     * @return string
-     */
-    public function getRequestPath ()
-    {
-        $path = parse_url($_SERVER["REQUEST_URI"],PHP_URL_PATH);
-        $name = explode(".php",$path);
-        return $name[0];
+    public function getQueryParams ()
+    {        
+        return $this->queryParams;
     }
 }
 
